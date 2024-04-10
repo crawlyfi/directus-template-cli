@@ -7,7 +7,23 @@ import {pipeline} from 'node:stream/promises'
 import {api} from '../sdk'
 
 export async function getAssetList() {
-  const response = await api.client.request(readFiles({limit: -1}))
+  let response
+
+  if(process.env.SKIP_ASSET_FOLDERS) {
+    response = await api.client.request(readFiles({
+      filter: {
+        folder: {
+          name: {
+            _nin: process.env.SKIP_ASSET_FOLDERS.split(',')
+          }
+        }
+      },
+      limit: -1
+    }))
+    ux.log('Skipped extracting files form folders: ' + process.env.SKIP_ASSET_FOLDERS)
+  } else {
+    response = await api.client.request(readFiles({limit: -1}))
+  }
   return response
 }
 
@@ -33,7 +49,7 @@ export async function downloadAllFiles(dir: string) {
   }
 
   // Get the list of files
-  const fileList = await getAssetList()
+  let fileList = await getAssetList()
 
   // Download all files
   await Promise.all(fileList.map(file => downloadFile(file, dir).catch(error => {
