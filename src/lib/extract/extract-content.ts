@@ -16,7 +16,34 @@ export async function getCollections() {
 
 export async function getDataFromCollection(collection: string, dir: string) {
   try {
-    // @ts-ignore
+    if(process.env.LIMIT_ITEMS) {
+      const limits = process.env.LIMIT_ITEMS.split(',')
+      for(let i = 0; i < limits.length; i++) {
+        const limit = limits[i]
+        if(limit.includes("|")) {
+          const split = limit.split("|")
+          if(split[0] === collection) {
+            //@ts-ignore
+            const response = await api.client.request(readItems(collection,
+              {
+                limit: split[1],
+              },
+            ),
+            )
+            writeToFile(`${collection}`, response, `${dir}/content/`)
+            ux.log('Extracted limited items from collection: ' + collection + ' with limit: ' + split[1])
+            return
+          }
+        } else {
+          if(limit === collection) {
+            ux.log('Skipped extracting items from collection: ' + collection)
+            return
+          }
+        }      
+      }
+    }
+
+    //@ts-ignore
     const response = await api.client.request(readItems(collection,
       {
         limit: -1,
@@ -26,8 +53,8 @@ export async function getDataFromCollection(collection: string, dir: string) {
     writeToFile(`${collection}`, response, `${dir}/content/`)
     ux.log('Extracted items from collection: ' + collection)
   } catch (error) {
-    ux.warn(`Error extracting items from: ${collection}`)
-    ux.warn(error.message)
+    // ux.warn(`Error extracting items from: ${collection}`)
+    // ux.warn(error.message)
   }
 }
 
