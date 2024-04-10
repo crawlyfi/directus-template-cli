@@ -1,4 +1,4 @@
-import {createItem, createItems, updateItem, updateItems, updateSingleton} from '@directus/sdk'
+import {createItem, createItems, deleteItems, updateItem, updateItems, updateSingleton} from '@directus/sdk'
 import {ux} from '@oclif/core'
 import path from 'node:path'
 
@@ -9,6 +9,8 @@ import readFile from '../utils/read-file'
 export default async function loadData(dir:string) {
   const collections = readFile('collections', dir)
   ux.action.start(`Loading data for ${collections.length} collections`)
+
+  await emptyTables(dir)
   await loadSkeletonRecords(dir)
   await loadFullData(dir)
   await loadSingletons(dir)
@@ -17,7 +19,43 @@ export default async function loadData(dir:string) {
   ux.log('Loaded data.')
 }
 
+function stop(collection: string) {  
+  return false
+  if(
+    collection === 'languages' ||
+    collection === 'content_brands' || 
+    collection === 'content_brands_translations' 
+  ) return false 
+  return true
+}
+
+async function emptyTables(dir: string) {
+  ux.log('Loading skeleton records')
+  const collections = readFile('collections', dir)
+
+  const userCollections = collections
+  .filter(item => !item.collection.startsWith('directus_', 0))
+  .filter(item => item.schema !== null) // Filter our any "folders"
+  .filter(item => !item.meta.singleton) // Filter out any singletons
+
+  // Empty collection
+  for (const collection of userCollections) {    
+    if(stop(collection.collection)) continue
+    ux.log(`Deleting all records in ${collection.collection}`)
+    try {
+      await api.client.request(deleteItems(collection.collection, {
+        limit: -1,
+      }))
+    } catch (error) {
+      ux.error(error.message)
+    }
+  }
+
+  ux.log('Deleted all records in user collections')
+}
+
 async function loadSkeletonRecords(dir: string) {
+  
   ux.log('Loading skeleton records')
   const collections = readFile('collections', dir)
 
@@ -29,16 +67,19 @@ async function loadSkeletonRecords(dir: string) {
   .filter(item => !item.meta.singleton) // Filter out any singletons
 
   for (const collection of userCollections) {
+    if(stop(collection.collection)) continue
+
+    ux.log(`Loading skeleton records for ${collection.collection}`)
     const name = collection.collection
     const primaryKeyField = getPrimaryKey(primaryKeyMap, name)
-
+    
     const sourceDir = path.resolve(
       dir,
       'content',
     )
 
     const data = readFile(name, sourceDir)
-
+    
     for (const entry of data) {
       try {
         await api.client.request(createItem(name, {
@@ -60,12 +101,14 @@ async function loadFullData(dir:string) {
 
   const primaryKeyMap = await getCollectionPrimaryKeys(dir)
 
-  const userCollections = collections
+  let userCollections = collections
   .filter(item => !item.collection.startsWith('directus_', 0))
   .filter(item => item.schema !== null) // Filter our any "folders"
   .filter(item => !item.meta.singleton) // Filter out any singletons
 
   for (const collection of userCollections) {
+    if(stop(collection.collection)) continue
+    ux.log(`Updating records for ${collection.collection}`)
     const name = collection.collection
     const primaryKeyField = getPrimaryKey(primaryKeyMap, name)
     const sourceDir = path.resolve(
@@ -75,14 +118,32 @@ async function loadFullData(dir:string) {
 
     const data = readFile(name, sourceDir)
 
+    
+    const fields = readFile('fields', dir)
+    collection.fields = fields.filter(
+      (field: any) => field.collection === collection.collection,
+    )
+    // Get the fields that are type alias
+    const aliasFields = collection.fields.filter(
+      (field: any) => field.type === 'alias',
+    )
+    
+    // Go trough data object and remove alias fields
+    const processedData = data.map((row: any) => {
+      for (const field of aliasFields) {
+        delete row[field.field]
+      }
+      return row
+    })
+
     try {
-      for (const row of data) {
+      for (const row of processedData) {
         delete row.user_created
         delete row.user_updated
         await api.client.request(updateItem(name, row[primaryKeyField], row))
       }
     } catch (error) {
-      logError(error)
+      // logError(error)
     }
   }
 
@@ -100,6 +161,7 @@ async function loadSingletons(dir:string) {
   )
 
   for (const collection of  singletonCollections) {
+    ux.log(`Loading Singelton data for ${collection.collection}`)
     const name = collection.collection
     const sourceDir = path.resolve(
       dir,
