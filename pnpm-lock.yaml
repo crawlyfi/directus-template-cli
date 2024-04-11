@@ -26,6 +26,9 @@ dependencies:
   bottleneck:
     specifier: ^2.19.5
     version: 2.19.5
+  dot-env:
+    specifier: ^0.0.1
+    version: 0.0.1
   dotenv:
     specifier: ^16.4.1
     version: 16.4.1
@@ -3134,6 +3137,10 @@ packages:
       no-case: 3.0.4
       tslib: 2.6.2
     dev: true
+
+  /dot-env@0.0.1:
+    resolution: {integrity: sha512-SajHtzm3v7yjMH8DW9xY+4i7Zv/cN3aMtLVy0mRMuZu8L9qRCR7CNqcl4KBbG27e5Up4BpSlEyPXXLNbSAe2DQ==}
+    dev: false
 
   /dotenv@16.4.1:
     resolution: {integrity: sha512-CjA3y+Dr3FyFDOAMnxZEGtnW9KBR2M0JvvUtXNW+dYJL5ROWxP9DUHCwgFqpMk0OXCc0ljhaNTr2w/kutYIcHQ==}

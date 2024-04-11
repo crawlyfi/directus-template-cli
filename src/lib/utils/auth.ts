@@ -23,14 +23,10 @@ export async function getDirectusUrl() {
   return directusUrl
 }
 
-export async function getDirectusToken(directusUrl: string) {
-  let directusToken
-  if (process.env.DIRECTUS_TOKEN) {
-    directusToken = process.env.DIRECTUS_TOKEN
-  } else {
+export async function getDirectusToken(directusUrl: string, directusToken?: string) {
+  if (!directusToken) {
     directusToken = await ux.prompt('What is your Directus Admin Token?')
-  }
-
+  } 
   // Validate token
   try {
     api.setAuthToken(directusToken)

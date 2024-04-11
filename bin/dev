@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-
+// add dot env
+require('dotenv').config()
 const oclif = require('@oclif/core')
 
 const path = require('path')

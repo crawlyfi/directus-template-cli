@@ -146,7 +146,11 @@ export default class ApplyCommand extends Command {
     this.log(separator)
 
     const directusUrl = await getDirectusUrl()
-    await getDirectusToken(directusUrl)
+    let directusToken = undefined 
+    if(process.env.DIRECTUS_TOKEN) {
+      directusToken = process.env.DIRECTUS_TOKEN
+    }
+    await getDirectusToken(directusUrl, directusToken)
 
     this.log(separator)
 

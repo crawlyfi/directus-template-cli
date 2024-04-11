@@ -25,6 +25,7 @@
     "@oclif/plugin-plugins": "^4.1.22",
     "axios": "^1.6.7",
     "bottleneck": "^2.19.5",
+    "dot-env": "^0.0.1",
     "dotenv": "^16.4.1",
     "formdata-node": "^6.0.3",
     "giget": "^1.2.1",

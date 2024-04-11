@@ -60,7 +60,11 @@ export default class ExtractCommand extends Command {
     this.log(separator)
 
     const directusUrl = await getDirectusUrl()
-    await getDirectusToken(directusUrl)
+    let directusToken = undefined
+    if(process.env.DIRECTUS_EXTRACT_TOKEN) {
+      directusToken = process.env.DIRECTUS_EXTRACT_TOKEN
+    }
+    await getDirectusToken(directusUrl,directusToken)
 
     this.log(separator)
 
