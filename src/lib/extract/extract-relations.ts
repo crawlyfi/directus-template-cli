@@ -1,7 +1,7 @@
-import {readFields, readRelations} from '@directus/sdk'
-import {ux} from '@oclif/core'
+import { readFields, readRelations } from '@directus/sdk'
+import { ux } from '@oclif/core'
 
-import {api} from '../sdk'
+import { api } from '../sdk'
 import writeToFile from '../utils/write-to-file'
 
 /**
@@ -16,30 +16,33 @@ export default async function extractRelations(dir: string) {
     const fields = await api.client.request(readFields())
 
     const customFields = fields.filter(
-      (i: any) => !i.meta.system,
+      (i: any) => {
+        if (i.meta && !i.meta.system) return true
+        return false
+      },
     )
 
     const relations = response
 
-    // Filter out relations where the collection starts with 'directus_' && the field is not within the customFields array
-    .filter(
-      (i: any) =>
-        !i.collection.startsWith('directus_', 0)
-            || customFields.some(
-              (f: { collection: string; field: string }) =>
-                f.collection === i.collection && f.field === i.field,
-            ),
+      // Filter out relations where the collection starts with 'directus_' && the field is not within the customFields array
+      .filter(
+        (i: any) =>
+          !i.collection.startsWith('directus_', 0)
+          || customFields.some(
+            (f: { collection: string; field: string }) =>
+              f.collection === i.collection && f.field === i.field,
+          ),
 
-    )
-    .map(i => {
-      delete i.meta.id
-      return i
-    })
+      )
+      .map(i => {
+        delete i.meta.id
+        return i
+      })
 
     await writeToFile('relations', relations, dir)
     ux.log('Extracted relations')
   } catch (error) {
     ux.warn('Error extracting Relations:')
-    ux.warn(error.message)
+    ux.error(error.message)
   }
 }

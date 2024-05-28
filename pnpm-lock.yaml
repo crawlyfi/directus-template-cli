@@ -6,11 +6,11 @@ settings:
 
 dependencies:
   '@directus/sdk':
-    specifier: ^14.0.0
-    version: 14.0.0
+    specifier: ^16.0.1
+    version: 16.0.1
   '@directus/types':
-    specifier: ^11.0.3
-    version: 11.0.3
+    specifier: ^11.1.1
+    version: 11.1.1
   '@oclif/core':
     specifier: ^3.18.1
     version: 3.18.1
@@ -791,12 +791,12 @@ packages:
       '@jridgewell/trace-mapping': 0.3.9
     dev: true
 
-  /@directus/constants@11.0.2:
-    resolution: {integrity: sha512-prHLzUL9WuYk/soM0SvbXFm2dT0PMwP+aTgUUG4Fk232vl2Avy/7mQ/oBGbG92qbKZDhR8RIQ3v/DAr7jsZPIQ==}
+  /@directus/constants@11.0.4:
+    resolution: {integrity: sha512-n44zwhZBy0YlMrtQFVtnHVAOk/dfefCSQD4qJBq1C1waXMEheG1ph5FVoa95nauq6jmdTILUibiChTfoFMVNPg==}
     dev: false
 
-  /@directus/schema@11.0.1:
-    resolution: {integrity: sha512-I8YaZcFdzY1Livv3fW2L0GTBan+MGIYancj9GM/AoZpfeI5PjCecqASna/ijD/WVwDlUUvx6b7aJcQ1OLXBDug==}
+  /@directus/schema@11.0.2:
+    resolution: {integrity: sha512-iEaS5cKc7Mf236NbCKBvyeRVXSKXYdwU0BAo0NMkQxqS1lpN5okPjjJIoMqJJ8c6aHvkQYOC54KPSQO17n/csg==}
     dependencies:
       knex: 3.1.0
     transitivePeerDependencies:
@@ -810,25 +810,31 @@ packages:
       - tedious
     dev: false
 
-  /@directus/sdk@14.0.0:
-    resolution: {integrity: sha512-xxX20VpdwKXR5O1QNo1HXY3hF8sulOjTdio+zWELLGsSnW4asXT32VLGhiPSl9gtZ2ctSnsrU29k5ACYD2WoRQ==}
+  /@directus/sdk@16.0.1:
+    resolution: {integrity: sha512-tG9J5uBxJlzB8yoXv6Gin9PhxOoYKXsGEfr4LBNJ+jlFoqPmwlNOManJnUTqGbpNlGxH/7qv3CJyvZUXvo5hoA==}
     engines: {node: '>=18.0.0'}
+    dependencies:
+      '@directus/system-data': 1.0.3
     dev: false
 
-  /@directus/types@11.0.3:
-    resolution: {integrity: sha512-iXurOdLdl6u7Y0429t+EPRUtGJeucrRis5n2GMYhozIdn/rWoJhIuouVhnv8pTneCG02AakXBeCtdjAPtH7fNw==}
+  /@directus/system-data@1.0.3:
+    resolution: {integrity: sha512-Dr7w2RZiX3/+kBOLqz8KkMHXmDhzVVraaK+CLQNgsB1FOxotuegyWfQxTi+YvDhH9gEs8/yZZBKeyQetcTQfSg==}
+    dev: false
+
+  /@directus/types@11.1.1:
+    resolution: {integrity: sha512-TdFfyFDB1H216f7i0xD2gjwxqZ2HLeamgElgkzVxv8UeF6XHFj87/ZvGNZbYqasg6Kna68GUTdqgPYze8aC9Rw==}
     peerDependencies:
-      knex: 3.1.0
-      vue: 3.3.13
+      knex: '3'
+      vue: ^3.4
     peerDependenciesMeta:
       knex:
         optional: true
       vue:
         optional: true
     dependencies:
-      '@directus/constants': 11.0.2
-      '@directus/schema': 11.0.1
-      '@types/geojson': 7946.0.13
+      '@directus/constants': 11.0.4
+      '@directus/schema': 11.0.2
+      '@types/geojson': 7946.0.14
     transitivePeerDependencies:
       - better-sqlite3
       - mysql
@@ -1962,8 +1968,8 @@ packages:
     resolution: {integrity: sha512-Q5Vn3yjTDyCMV50TB6VRIbQNxSE4OmZR86VSbGaNpfUolm0iePBB4KdEEHmxoY5sT2+2DIvXW0rvMDP2nHZ4Mg==}
     dev: true
 
-  /@types/geojson@7946.0.13:
-    resolution: {integrity: sha512-bmrNrgKMOhM3WsafmbGmC+6dsF2Z308vLFsQ3a/bT8X8Sv5clVYpPars/UPq+sAaJP+5OoLAYgwbkS5QEJdLUQ==}
+  /@types/geojson@7946.0.14:
+    resolution: {integrity: sha512-WCfD5Ht3ZesJUsONdhvm84dmzWOiOzOAqOncN0++w0lBw1o8OuDNJF2McvvCef/yBqb/HYRahp1BYtODFQ8bRg==}
     dev: false
 
   /@types/http-cache-semantics@4.0.4:
